@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: llm-worker
+  name: llm-worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-worker-deployment
+  template:
+    metadata:
+      labels:
+        app: llm-worker-deployment
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - arm64
+                  - key: cpu
+                    operator: In
+                    values:
+                      - rk3588
+      containers:
+        - name: llm-worker
+          image: darkautism/llmserver-rs
+          securityContext:
+            privileged: true
+          args: ["kautism/DeepSeek-R1-Distill-Qwen-1.5B-RK3588S-RKLLM1.1.4"]
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: data
+              mountPath: /data/models
+          resources:
+            requests:
+              memory: 3500Mi
+              cpu: 3
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: llm-worker-pvc
