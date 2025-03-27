@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: llm-worker
+  namespace: default
   name: llm-worker-deployment
 spec:
   replicas: 1

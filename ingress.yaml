@@ -3,7 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: llm-worker-ingress
-  namespace: llm-worker
+  namespace: default
   annotations:
     cert-manager.io/issuer: letsencrypt-kaba-wild-card
 spec:
